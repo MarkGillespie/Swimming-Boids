@@ -23,8 +23,8 @@ class Boid{
                           //fish can see. This affects their changing color to match fish in front of them
  float comfortZone = 15*size;//this is how close a fish has to be to repel the fish by separation
  float eyeSight = 37*size;//this is how far away the fish can see (for cohesion and alignment)
- float colorVision = 30*size;//this is how far the fish can see to set its color. Fish farther away don't 
-                             //affect the color
+ float colorVision = 30*size;//this is how far the fish can see to set its color. 
+                             //Fish farther away don't affect the color
  float speedLimit = 20*size;//this is the fastest a fish will go. Without this constraint, they go too fast.
  float forceLimit = .01*size;//this is the maximum force that can be applied
 
@@ -42,15 +42,20 @@ class Boid{
  **************************************/
  public Boid(int x, int y, int H_)//constructor. Takes and x coordinate, a y coordinate, and a hue
  {
-  //puts the position vector at (x,y) plus or minus 10 in each direction
+ // puts the position vector at (x,y) plus or minus 10 in each direction
   position = new PVector(x + random(-10,10), y + random(-10,10));
+  
   velocity = PVector.random2D();//randomize velocity (makes a vector with magnitude 1 and a random angle
   
   H = H_;//set the hue from the parameter
-  S = (float)(Math.random()*50)+50;//sets the value of saturation randomly to a value from 0-99. 
-                                   //Saturation ranges from 0 to 100, so this keeps it fairly saturated
-  B = (float)(Math.random()*50)+50;//sets the value of brightness randomly to a value from 0-99.
-                                   //Brightness ranges from 0 to 100, so this keeps it fairly bright
+  
+  /*sets the value of saturation randomly to a value from 0-99. 
+  Saturation ranges from 0 to 100, so this keeps it fairly saturated*/
+  S = (float)(Math.random()*50)+50;
+  
+  /*sets the value of brightness randomly to a value from 0-99. 
+  brightness ranges from 0 to 100, so this keeps it fairly bright*/
+  B = (float)(Math.random()*50)+50;
  }
  
  /*************************************
@@ -60,8 +65,8 @@ class Boid{
  {
   steeringForce = new PVector(0,0);//clear the old steering force
   steeringForce.add(forces(school));//calculate the forces
-  velocity.mult(.5);//divide the old velocity in half. This keeps the fish 
-                    //responsive to new forces, while still following general paths
+  velocity.mult(.5);//divide the old velocity in half. This keeps the fish responsive to new forces, while 
+                    //still following general paths
   velocity.add(steeringForce);//add the force to the velocity (F = ma with mass 1)
   if(velocity.mag()<1)//if the velocity gets too low, double it
     velocity.mult(2);
@@ -72,25 +77,25 @@ class Boid{
   //wrap fish around the edges
   //(coordinates are measured with the origin at the top left
   
-  */if it goes off the left of the screen (if the position plus
+  /*if it goes off the left of the screen (if the position plus 
   the distance from the center to the edge of the fish is off the edge)*/
   if (position.x < size){
     position.x = width-size;//move the fish to the right of the screen(minus the radius of the fish)
   }
   
-   */if it goes off the top of the screen (if the position plus
+  /*if it goes off the top of the screen (if the position plus
   the distance from the center to the edge of the fish is off the edge)*/
   if (position.y < size) {
     position.y = height-size;
   }
   
-   */if it goes off the right of the screen (if the position plus
+  /*if it goes off the right of the screen (if the position plus
   the distance from the center to the edge of the fish is off the edge)*/
   if (position.x > width-size) {
     position.x = size;
   }
   
-   */if it goes off the bottom of the screen (if the position plus
+  /*if it goes off the bottom of the screen (if the position plus
   the distance from the center to the edge of the fish is off the edge)*/
   if (position.y > height-size){
     position.y = size;
@@ -164,22 +169,21 @@ class Boid{
          }
          temp.mult(5);//multiply the vector to bring it a scale that fits with the other forces
          separation.add(temp);//add the resulting vector to the net force due to cohesion
-         sepCount++;//increment the separation counter to record that
-                    //another fish has been found inside the separation radius
+         sepCount++;//increment the separation counter to record that another fish has been found 
+                    //inside the separation radius
        }
        
        /*************************************
            COLOR CHANGE
        **************************************/
        //calculates the vector displacement between this boid and the other one
-       PVector disp =PVector.sub(this.position, b.position);
-       
+       PVector disp =PVector.sub(b.position, this.position);
        if(dist < colorVision)//the color vision also has a different radius, so it requires another check
        {
          float head = disp.heading();//get angle from this boid to the other boid
          
          //check to see if the other boid is ahead of this one (if the heading is within the vision Cone)
-         if(Math.abs(head-velocity.heading())<PI/2 && Math.abs(head-b.velocity.heading()) < visionCone)
+         if(Math.abs(head-velocity.heading())<visionCone)
          {
            frontColor += b.H;//add the color of the fish in front to the observed color variable
            colorCount++;//increment the counter to record that another fish has been found in front
@@ -187,8 +191,7 @@ class Boid{
        }  
      }   
    } 
-      
-  if(colorCount==0)//if there are no fish in front
+  if(colorCount < 1)//if there are no fish in front
   {
     /*with a 10% chance, randomly change the color 
     by a factor of up to RANDOM_COLOR_CHANGE, which is specified at the top*/
@@ -196,8 +199,9 @@ class Boid{
     if(rnd==0)
     {
       H += (int)(Math.random()*RANDOM_COLOR_CHANGE-RANDOM_COLOR_CHANGE/2);
+      H %= 360;
     }
-  } else if (colorCount > 3){//if there are more than 3 boids in front, just take their average color
+  } else if (colorCount > 5){//if there are more than 3 boids in front, just take their average color
     float otherColor = frontColor/colorCount;
     H = otherColor;
   } else {//otherwise, mix the average front color with the current color
@@ -241,10 +245,8 @@ class Boid{
          mouse.sub(position);
          float dist = mouse.mag();
          mouse.normalize();
-         
-         /*creates a vector pointing away from the mouse, 
-         whose magnitude is inversely proportional to distance*/
-         mouse.div(dist); 
+         mouse.div(dist); //creates a vector pointing away from the mouse, whose 
+                          //magnitude is inversely proportional to distance
          steering.sub(mouse);//add into steering
      }
    }
