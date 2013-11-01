@@ -1,5 +1,1 @@
-This is my implementation of Craig Reynold's Boids written in Processing, a programming language made for creating visual
-programs (http://processing.org/). It renders schools of fish. Fish swim in paths governed by their neighbors, and take
-their colors from fish in front of them. The weights for the various forces acting on the fish can be changed using
-scrollbars. Also, while spacebar is pressed, the fish will swim away from the mouse. A simplified version of the program
-can be found running online on OpenProcessing (http://www.openprocessing.org/sketch/106376). 
+This is my implementation of Craig Reynold's Boids written in Processing, a programming language made for creating visual programs (http://processing.org/). It renders schools of fish. Fish swim in paths governed by their neighbors, and take their colors from fish in front of them. The weights for the various forces acting on the fish can be changed using scrollbars. Also, while spacebar is pressed, the fish will swim away from the mouse. A simplified version of the program can be found running online on OpenProcessing (http://www.openprocessing.org/sketch/106376). 
