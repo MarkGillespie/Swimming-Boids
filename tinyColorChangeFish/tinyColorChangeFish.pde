@@ -65,7 +65,8 @@ class Boid{
  {
   steeringForce = new PVector(0,0);//clear the old steering force
   steeringForce.add(forces(school));//calculate the forces
-  velocity.mult(.5);//divide the old velocity in half. This keeps the fish responsive to new forces, while still following general paths
+  velocity.mult(.5);//divide the old velocity in half. This keeps the fish responsive to new forces, while 
+                    //still following general paths
   velocity.add(steeringForce);//add the force to the velocity (F = ma with mass 1)
   if(velocity.mag()<1)//if the velocity gets too low, double it
     velocity.mult(2);
